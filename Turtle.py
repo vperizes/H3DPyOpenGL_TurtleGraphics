@@ -13,8 +13,8 @@ screen_width = 800
 screen_height = 800
 ortho_left = -400
 ortho_right = 400
-ortho_top = -400
-ortho_bottom = 400
+ortho_top = 0
+ortho_bottom = 800
 
 screen = pygame.display.set_mode((screen_width, screen_height), DOUBLEBUF | OPENGL)
 pygame.display.set_caption('Turtle Graphics')
@@ -25,13 +25,14 @@ pygame.display.set_caption('Turtle Graphics')
 current_position = (0, 0)
 direction = np.array([0, 1, 0])  # turtle facing in y-dir. This is the orientation of the turtle
 
-axiom = 'F'
+axiom = 'X'
 rule = {
-    "F": "F[+F]F"
+    "F": "FF",
+    "X": "F+[-F-XF-X][+FF][--XF[+X]][++F-X]"
 }
 
-draw_length = 10  # unit for which turtle moves forward
-angle = 90
+draw_length = 5  # unit for which turtle moves forward
+angle = 10
 stack = []  # where we store push and pop for commands
 rule_run_number = 5  # this is the number of iterations for the L-system
 instructions = ""  # this is where we are storing our iterations
@@ -72,9 +73,9 @@ def line_to(x, y):
     glEnd()
 
 
-def move_to(x, y):
+def move_to(pos):
     global current_position
-    current_position = (x, y)
+    current_position = (pos[0], pos[1])
 
 def reset_turtle():
     global current_position
@@ -82,10 +83,23 @@ def reset_turtle():
     current_position = (0, 0)
     direction = np.array([0, 1, 0])
 
+
 def draw_turtle():
-    for i in range(20):
-        forward(200)
-        rotate(170)
+    global direction
+    for character in range(0, len(instructions)):  # allows us to loop through each iteration of instructions in the
+        # run_rule method and use those to direct the turtle
+        if instructions[character] == 'F':
+            forward(draw_length)
+        elif instructions[character] == '+':
+            rotate(angle)
+        elif instructions[character] == '-':
+            rotate(-angle)
+        elif instructions[character] == '[':
+            stack.append((current_position, direction))
+        elif instructions[character] == ']':
+            current_vector = stack.pop()  # removes the last element added to the stack
+            move_to(current_vector[0])
+            direction = current_vector[1]
 
 
 def forward(draw_length):
@@ -101,7 +115,7 @@ def rotate(angle):
 
 init_ortho()
 done = False
-glLineWidth(5)
+glLineWidth(1)
 run_rule(rule_run_number)
 while not done:
     for event in pygame.event.get():
