@@ -88,18 +88,13 @@ def draw_turtle():
     points.append((x, y))
     r = np.random.rand()  # generates a num between 0 and 1
     if r < 0.1:
-        x, y = 0.00 * x + 0.00 * y, 0.00 * x + 0.16 * y + 0.00
+        x, y = 0.00 * x + 0.00 * y + 0.00, 0.00 * x + 0.16 * y + 0.00
     elif r < 0.86:
-        x, y = 0.85 * x + 0.04 * y, -0.04 * x + 0.85 * y + 1.6
+        x, y = 0.85 * x + 0.04 * y + 0.00, -0.04 * x + 0.85 * y + 1.6
     elif r < 0.93:
-        x, y = 0.2 * x - 0.26 * y, 0.23 * x + 0.22 * y + 1.6
+        x, y = 0.2 * x - 0.26 * y + 0.00, 0.23 * x + 0.22 * y + 1.6
     else:
-        x, y = -0.15 * x + 0.28 * y, 0.26 * x + 0.24 * y + 0.44
-
-
-def rotate(angle):
-    global direction
-    direction = z_rotation(direction, math.radians(angle))
+        x, y = -0.15 * x + 0.28 * y + 0.00, 0.26 * x + 0.24 * y + 0.44
 
 
 init_ortho()
